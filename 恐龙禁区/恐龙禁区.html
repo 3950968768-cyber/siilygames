@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111711">
+<title>恐龙禁区 · DINOBREAK</title>
+<style>
+:root{color-scheme:dark;--bg:#10150f;--panel:#171e16;--edge:#333d2d;--yellow:#d8f36a;--muted:#929d86;--ink:#edf1df;--red:#fb7655;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink);font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif}body{overflow:hidden}button{font:inherit;cursor:pointer}button:focus-visible{outline:2px solid var(--yellow);outline-offset:5px}button:disabled{opacity:.4;cursor:default}[hidden]{display:none!important}.shell{max-width:1600px;height:100dvh;margin:auto;padding:18px 28px 14px;display:flex;flex-direction:column;gap:13px}.topbar{display:flex;align-items:center;justify-content:space-between;min-height:42px;gap:16px}.brand{display:flex;align-items:center;gap:12px}.brand-icon{display:grid;place-items:center;width:38px;height:38px;background:var(--yellow);color:#161d10;font:900 30px var(--mono);clip-path:polygon(0 0,76% 0,100% 24%,100% 100%,24% 100%,0 76%)}.brand h1{font-size:19px;letter-spacing:3px;margin:0;font-weight:800}.brand small{font:9px var(--mono);color:var(--muted);letter-spacing:3.7px;display:block;margin-top:4px}.station{display:flex;gap:10px;align-items:center;font-size:11px;color:var(--muted);letter-spacing:2px}.dot{width:5px;height:5px;background:var(--yellow);box-shadow:0 0 8px #d8f36966}.tools{display:flex;gap:6px}.tool{background:transparent;color:#afb9a2;border:1px solid var(--edge);height:33px;padding:0 12px;font-size:11px;display:flex;align-items:center;gap:7px}.tool:hover{color:var(--yellow);border-color:#71804b}.tool svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8}.tool.active{color:var(--yellow)}
+.hud{display:grid;grid-template-columns:1.15fr .85fr 1fr 1.15fr;border-block:1px solid var(--edge);min-height:83px;background:linear-gradient(90deg,#1b2217aa,transparent)}.stat{padding:13px 22px;border-right:1px solid var(--edge);position:relative}.stat:first-child{padding-left:15px}.stat:last-child{border:0}.label{font:10px var(--mono);letter-spacing:1.5px;color:var(--muted);display:flex;gap:9px;align-items:center}.label b{font:10px Arial;letter-spacing:1px;color:#aab49c}.value{font:700 28px var(--mono);line-height:1.15;letter-spacing:1px;margin-top:7px}.value.score{color:var(--yellow)}.value .unit{font-size:12px;color:#717f65;margin-left:10px;font-weight:400;letter-spacing:0}.combo-rail{width:72px;height:3px;position:absolute;bottom:18px;left:130px;background:#343c2a}.combo-rail i{display:block;width:0;height:100%;background:var(--yellow)}.boss-stat .value{font-size:22px}.boss-line{width:80px;height:3px;background:#3b3527;position:absolute;right:18px;bottom:24px}.boss-line i{display:block;height:100%;width:0;background:#dca95b}.boss-stat .label:before{content:"";width:5px;height:5px;background:#dca95b}.boss-stat.active .value{color:var(--red)}
+.stage{flex:1;min-height:0;position:relative;border:1px solid #3d4634;background:#111b15;overflow:hidden;isolation:isolate}.stage:before,.stage:after{content:"";position:absolute;width:16px;height:16px;border-color:#a2af73;border-style:solid;z-index:5;pointer-events:none}.stage:before{top:-1px;left:-1px;border-width:2px 0 0 2px}.stage:after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}#game{display:block;width:100%;height:100%;touch-action:none;outline:0}.stage.playing #game{cursor:none}.scanlines{position:absolute;inset:0;pointer-events:none;z-index:3;opacity:.16;background:repeating-linear-gradient(transparent 0px,transparent 3px,#070c07 3px,#070c07 4px)}.field-id{position:absolute;top:19px;left:23px;display:flex;gap:12px;align-items:center;font:10px var(--mono);letter-spacing:2px;color:#818d74;pointer-events:none}.field-id b{color:var(--yellow);font-weight:400}.field-clock{position:absolute;right:23px;top:18px;font:11px var(--mono);letter-spacing:2px;color:#a6b396;pointer-events:none}.field-clock span{color:var(--yellow);margin-left:8px}.edge-warning{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 80px #f4553545;border:2px solid #f46e4e90;z-index:2}.broadcast{position:absolute;top:65px;left:50%;transform:translateX(-50%);padding:10px 24px;background:#271c12e8;border:1px solid #976146;color:#ffa07a;text-align:center;font-size:13px;letter-spacing:3px;z-index:4;white-space:nowrap}.boss-hp{position:absolute;top:56px;left:50%;transform:translateX(-50%);width:min(350px,48%);pointer-events:none}.boss-hp .caption{display:flex;justify-content:space-between;color:#ff9b7c;font:10px var(--mono);margin-bottom:7px;letter-spacing:2px}.boss-hp .track{height:5px;background:#59362c}.boss-hp .track i{display:block;height:100%;width:100%;background:#fa7957}.danger-notice{position:absolute;bottom:102px;left:50%;transform:translateX(-50%);color:#ffac79;font:12px var(--mono);letter-spacing:2px;pointer-events:none;background:#1a1b11e0;padding:8px 14px}.overlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;background:linear-gradient(90deg,#10190ff2 0%,#10190fea 27%,#10190f90 51%,#10190f00 75%)}.start-content{padding:30px 6%;width:64%;max-width:790px}.eyebrow{display:flex;gap:10px;align-items:center;color:var(--yellow);font:10px var(--mono);letter-spacing:2.5px;margin-bottom:20px}.eyebrow:before{content:"";width:17px;height:2px;background:currentColor}.start-content h2{font-size:clamp(35px,4.2vw,64px);line-height:1.18;letter-spacing:1px;margin:0 0 19px;font-weight:900}.start-content h2 span{color:var(--yellow)}.intro{color:#a4b095;font-size:13px;line-height:1.9;margin:0 0 24px;max-width:450px}.start-actions{display:flex;align-items:center;gap:20px}.primary{border:0;background:var(--yellow);color:#202810;padding:15px 27px;font-size:14px;font-weight:800;letter-spacing:2px;min-width:165px;display:inline-flex;align-items:center;justify-content:space-between;gap:25px;box-shadow:3px 3px 0 #71833d;transition:background .12s,transform .12s}.primary:hover{background:#e9ff93;transform:translateY(-2px)}.primary:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #71833d}.start-actions small{font:10px var(--mono);color:#7f8c71;line-height:1.7;letter-spacing:1px}.species{display:flex;gap:23px;margin-top:30px}.species div{font-size:11px;color:#abb89b;display:flex;flex-direction:column;gap:6px}.species strong{font:10px var(--mono);letter-spacing:1px;color:#6f8068}.species i{display:inline-block;width:6px;height:6px;background:#9fb786;margin-right:6px}.species div:nth-child(2) i{background:#d6a76a}.species div:nth-child(3) i{background:#f58061}.scene-note{position:absolute;right:26px;bottom:27px;color:#7e8b6d;font:9px var(--mono);line-height:1.9;letter-spacing:2px;text-align:right}.center-overlay{justify-content:center;background:#0b120ddc;backdrop-filter:blur(5px);text-align:center}.modal{padding:30px}.modal .eyebrow{justify-content:center}.modal h2{font-size:44px;letter-spacing:4px;margin:12px 0}.modal p{font-size:13px;color:#a1ad93}.final-score{font:700 56px var(--mono);color:var(--yellow);margin:22px 0 14px}.final-label{font:10px var(--mono);color:#829372;letter-spacing:3px}.final-stats{display:flex;justify-content:center;gap:30px;margin:23px 0 28px;font:12px var(--mono);color:#a9b49a}.final-stats strong{color:#e0e8ce;display:block;font-size:21px;margin-bottom:7px}.modal .primary{margin-top:7px}.secondary{color:#a1ae90;background:transparent;border:1px solid #526144;padding:14px 20px;margin-left:13px;font-size:13px}.summary-message{font-size:12px;color:var(--yellow);margin:10px 0;height:16px}
+.bottom{display:flex;align-items:center;gap:26px;min-height:67px}.weapon{display:flex;align-items:center;gap:12px;min-width:198px}.weapon-icon{width:45px;height:36px;border:1px solid #3d4930;display:grid;place-items:center}.weapon-icon svg{width:31px;height:22px;fill:#829762}.weapon strong{display:block;font:700 13px var(--mono);letter-spacing:1px}.weapon small{display:block;font-size:10px;color:var(--muted);margin-top:6px;letter-spacing:1px}.thermal{flex:1;max-width:480px}.thermal-title{display:flex;justify-content:space-between;margin-bottom:9px;align-items:center;font:10px var(--mono);letter-spacing:1px;color:#a4af97}.thermal-title strong{font:12px var(--mono);color:var(--yellow)}.heat-track{height:8px;background:#27311f;position:relative;overflow:hidden}.heat-track:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(5% - 2px),#10150f calc(5% - 2px),#10150f 5%)}.heat-fill{width:0;height:100%;background:var(--yellow)}.thermal.locked .heat-fill{background:#fa7651}.thermal.locked strong{color:#ff8a67}.hints{display:flex;gap:22px;margin-left:auto}.hint{font-size:10px;color:#a6b295;white-space:nowrap;display:flex;align-items:center;gap:8px}kbd{font:10px var(--mono);padding:5px 7px;color:#c9d3b9;border:1px solid #455139;background:#192016;box-shadow:0 2px 0 #2c3524}.footline{font:9px var(--mono);letter-spacing:1px;color:#6b7860;display:flex;justify-content:space-between;padding-top:2px;border-top:1px solid #262f20}.footline span:last-child{color:#819069}.shell:fullscreen{background:var(--bg);max-width:none;width:100vw;height:100vh;padding:20px 30px}
+@media(max-width:1000px){.shell{padding:14px 16px 10px;gap:10px}.station{display:none}.hints{gap:13px}.hint:last-child{display:none}.weapon{min-width:165px}.bottom{gap:20px}.boss-line{width:45px}.start-content{width:66%;padding-left:5%}.species{gap:17px}.intro{font-size:12px}.start-actions small{display:none}.combo-rail{display:none}.stat{padding-inline:16px}.label{letter-spacing:.7px}.boss-line{right:14px}.start-content h2{font-size:45px}}
+@media(max-height:750px) and (min-width:761px){.shell{padding-top:12px;gap:8px}.hud{min-height:71px}.stat{padding-top:9px;padding-bottom:9px}.value{font-size:25px}.topbar{min-height:36px}.bottom{min-height:56px}.start-content{padding-block:10px}.start-content h2{font-size:42px;margin-bottom:12px}.eyebrow{margin-bottom:13px}.intro{margin-bottom:16px}.species{margin-top:20px}.primary{padding-block:13px}.modal h2{font-size:33px}.final-score{font-size:44px;margin-block:12px}.final-stats{margin-block:18px}}
+@media(max-width:760px){.shell{padding:10px;gap:9px}.brand h1{font-size:15px}.brand small{font-size:8px}.brand-icon{width:32px;height:32px}.tool{height:32px;padding:0 9px}.tool span{display:none}.hud{grid-template-columns:1.05fr .7fr .8fr 1fr;min-height:73px}.stat{padding:11px 9px}.stat:first-child{padding-left:10px}.label{font-size:8px;letter-spacing:0}.label b{display:none}.value{font-size:23px}.value .unit{display:none}.boss-stat .value{font-size:18px}.boss-line{display:none}.bottom{min-height:60px;gap:13px;flex-wrap:wrap}.weapon{min-width:145px;gap:8px}.weapon-icon{width:35px;height:32px}.weapon strong{font-size:11px}.thermal{max-width:none}.hints{width:100%;justify-content:center;gap:20px;margin:0 0 4px}.hint:last-child{display:flex}.footline{font-size:8px}.footline span:last-child{display:none}.start-content{width:100%;padding:25px 25px;max-width:510px}.overlay{background:linear-gradient(90deg,#10190fed,#10190fac)}.start-content h2{font-size:42px}.intro{max-width:310px}.scene-note{display:none}.species{gap:20px}.eyebrow{font-size:9px}.field-id{font-size:8px;left:13px;top:14px;gap:7px;letter-spacing:1px}.field-clock{font-size:9px;top:13px;right:12px;letter-spacing:0}.modal{padding:20px}.modal h2{font-size:33px}.final-score{font-size:43px}.final-stats{gap:20px}.boss-hp{top:48px;width:56%}.danger-notice{bottom:55px;font-size:10px}.broadcast{font-size:10px;letter-spacing:1px;padding:9px 13px}}
+@media(max-width:420px){.brand small{letter-spacing:2px}.brand{gap:8px}.tools{gap:4px}.tool{padding-inline:7px}.start-content{padding:20px}.start-content h2{font-size:35px}.intro{font-size:12px}.species{gap:15px}.species div{font-size:10px}.species strong{font-size:9px}.start-content .eyebrow{letter-spacing:1px}.primary{padding:14px 24px;min-width:160px}.weapon{min-width:135px}.weapon small{font-size:9px}.thermal-title{font-size:9px}.hint{font-size:9px;gap:5px}.hints{gap:14px}.hud .label{font-size:8px}.label b{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.scanlines{display:none}}
+</style>
+</head>
+<body>
+<main class="shell" id="shell">
+  <header class="topbar">
+    <div class="brand"><div class="brand-icon" aria-hidden="true">↗</div><div><h1>恐龙禁区</h1><small>DINOBREAK / ARCADE</small></div></div>
+    <div class="station"><i class="dot"></i> 第 07 防线 <span>/</span> 最后一道火力</div>
+    <div class="tools">
+      <button class="tool active" id="soundBtn" type="button" aria-label="关闭音效" aria-pressed="true" title="音效 M"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8h3l4-4v12l-4-4H3zM13 6q5 4 0 8M15 3q8 7 0 14"/></svg><span>音效 开</span></button>
+      <button class="tool" id="pauseBtn" type="button" aria-label="暂停游戏" disabled title="暂停 P / Esc"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4v12M14 4v12"/></svg><span>暂停</span></button>
+      <button class="tool" id="fullBtn" type="button" aria-label="切换全屏" title="全屏 F"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg><span>全屏</span></button>
+    </div>
+  </header>
+  <section class="hud" aria-label="战斗数据">
+    <div class="stat"><div class="label">SCORE <b>当前分数</b></div><div class="value score" id="score">000000</div></div>
+    <div class="stat"><div class="label">KILLS <b>击杀数</b></div><div class="value" id="kills">00<span class="unit">ELIMINATED</span></div></div>
+    <div class="stat"><div class="label">COMBO <b>连杀数</b></div><div class="value" id="combo">0<span class="unit">×1 分数</span></div><div class="combo-rail"><i id="comboFill"></i></div></div>
+    <div class="stat boss-stat" id="bossStat"><div class="label" id="bossLabel">BOSS IN <b>巨兽倒计时</b></div><div class="value" id="bossTimer">00:30</div><div class="boss-line"><i id="bossProgress"></i></div></div>
+  </section>
+  <section class="stage" id="stage" aria-label="恐龙禁区战场">
+    <canvas id="game" aria-label="鼠标瞄准，按住左键或空格射击，P 暂停。恐龙触碰底部炮台后游戏结束。">浏览器不支持 Canvas，请使用较新的 Chrome、Edge、Firefox 或 Safari。</canvas>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="field-id"><b id="fieldStatus">● STANDBY</b><span>SECTOR 07 / 禁入区</span></div>
+    <div class="field-clock">存活 <span id="elapsed">00:00</span></div>
+    <div class="edge-warning" id="edgeWarning" hidden></div>
+    <div class="broadcast" id="broadcast" hidden role="status"></div>
+    <div class="boss-hp" id="bossHp" hidden><div class="caption"><span>霸王龙 / TYRANNOSAURUS</span><span id="bossHpText">20 / 20</span></div><div class="track"><i id="bossHpFill"></i></div></div>
+    <div class="danger-notice" id="heatNotice" hidden>枪管过热 · 冷却 2.0s</div>
+    <div class="overlay" id="startScreen">
+      <div class="start-content">
+        <div class="eyebrow">LAST LINE OF DEFENSE / 生存行动</div>
+        <h2>别让它们<br><span>越过防线。</span></h2>
+        <p class="intro">史前巨兽正在逼近。守住你的机枪炮台。<br>瞄准、扫射，留意枪管温度——活到下一秒。</p>
+        <div class="start-actions"><button class="primary" id="startBtn" type="button">开始作战 <span aria-hidden="true">↗</span></button><small>PRESS ENTER<br>TO DEPLOY</small></div>
+        <div class="species" aria-label="恐龙类型"><div><span><i></i>迅猛龙</span><strong>03 HP · Z 字突袭</strong></div><div><span><i></i>三角龙</span><strong>08 HP · 重甲冲锋</strong></div><div><span><i></i>霸王龙</span><strong>20 HP · 每 30 秒</strong></div></div>
+      </div>
+      <div class="scene-note">THREAT LEVEL: EXTREME<br>AMMUNITION: UNLIMITED<br>REINFORCEMENTS: NONE</div>
+    </div>
+    <div class="overlay center-overlay" id="pauseScreen" hidden><div class="modal"><div class="eyebrow">SYSTEM ON HOLD</div><h2>战斗已暂停</h2><p>喘口气。防线正在等你。</p><button class="primary" id="resumeBtn" type="button">继续作战 <span>↗</span></button><p>按 P / Esc 继续</p></div></div>
+    <div class="overlay center-overlay" id="endScreen" hidden><div class="modal"><div class="eyebrow">DEFENSE BREACHED / 防线失守</div><h2>GAME OVER</h2><div class="final-label">FINAL SCORE / 最终分数</div><div class="final-score" id="finalScore">000000</div><div class="summary-message" id="recordMessage"></div><div class="final-stats"><div><strong id="finalKills">0</strong>击杀数</div><div><strong id="finalCombo">0</strong>最高连杀</div><div><strong id="finalTime">00:00</strong>存活时间</div></div><button class="primary" id="restartBtn" type="button">重新作战 <span aria-hidden="true">↻</span></button><p>按 Enter 再来一局</p></div></div>
+  </section>
+  <section class="bottom" aria-label="武器状态与操作说明">
+    <div class="weapon"><div class="weapon-icon" aria-hidden="true"><svg viewBox="0 0 42 26"><path d="M3 8h23V5h10v4h5v6h-8v3H19v-4h-3l-3 10H7l3-10H3zM19 1h10v4H19z"/></svg></div><div><strong>MG-07 <span style="color:#80925e">/ ∞</span></strong><small>固定式重机枪 · 无限弹药</small></div></div>
+    <div class="thermal" id="thermal"><div class="thermal-title"><span id="heatLabel">BARREL HEAT / 枪管温度</span><strong id="heatText">0%</strong></div><div class="heat-track" role="progressbar" aria-label="枪管温度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="heatTrack"><div class="heat-fill" id="heatFill"></div></div></div>
+    <div class="hints"><span class="hint"><kbd>鼠标</kbd>移动瞄准</span><span class="hint"><kbd>左键 / SPACE</kbd>持续开火</span><span class="hint"><kbd>P</kbd>暂停</span></div>
+  </section>
+  <footer class="footline"><span>保持射界清晰 · 适时停火散热 · 连续击杀提升分数</span><span id="bestScore">LOCAL BEST / 000000</span></footer>
+</main>
+<script>
+'use strict';
+(() => {
+// 所有图形、声音与逻辑均在本文件中生成，无网络请求、无外部依赖。
+const $=id=>document.getElementById(id);
+const canvas=$('game'),ctx=canvas.getContext('2d'),W=1280,H=680;
+const player={x:W/2,y:H-78,r:29};
+const TYPES={raptor:{hp:3,speed:78,r:26,scale:1,points:100},trike:{hp:8,speed:42,r:38,scale:1.04,points:250},rex:{hp:20,speed:31,r:64,scale:1.17,points:1000}};
+const FIRE_INTERVAL=.075,HEAT_PER_SHOT=3.85,COOL_RATE=28,LOCK_TIME=2,COMBO_WINDOW=3.5;
+const game={state:'menu',time:0,score:0,kills:0,combo:0,bestCombo:0,comboTime:0,heat:0,lock:0,fireTimer:0,spawnTimer:.95,nextBoss:30,bosses:0,enemies:[],bullets:[],particles:[],texts:[],rings:[],decals:[],shake:0,flash:0,shotFlash:0,banner:0,lastHit:0};
+const input={x:W*.5,y:H*.3,mouse:false,space:false,inside:false};
+let dpr=1,view={scale:1,x:0,y:0},lastTime=0,visualTime=0,uiTimer=0,soundOn=true,record=0;
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+try{record=Math.max(0,Number(localStorage.getItem('dinobreak-best'))||0)}catch(e){}
+$('bestScore').textContent='LOCAL BEST / '+String(record).padStart(6,'0');
+const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const fmt=t=>Math.floor(t/60).toString().padStart(2,'0')+':'+Math.floor(t%60).toString().padStart(2,'0');
+const poly=(pts,color)=>{ctx.fillStyle=color;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fill()};
+
+// Native Canvas pixel silhouettes. Coordinates are centered on each creature.
+// Art extents at scale 1: raptor 78 × 66, trike 99 × 77, rex 152 × 146.
+function drawDinosaur(ctx, type, x, y, scale = 1, facing = 1, phase = 0, flash = 0) {
+  const bright = Math.max(0, Math.min(1, flash));
+  const tint = (hex) => {
+    if (!bright) return hex;
+    const c = parseInt(hex.slice(1), 16);
+    return `rgb(${Math.round((c >> 16) + (255 - (c >> 16)) * bright)},${Math.round(((c >> 8) & 255) + (255 - ((c >> 8) & 255)) * bright)},${Math.round((c & 255) + (255 - (c & 255)) * bright)})`;
+  };
+  const ink = '#101c1c';
+  const poly = (points, fill, outline = true) => {
+    ctx.beginPath();
+    ctx.moveTo(points[0][0], points[0][1]);
+    for (let i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+    ctx.closePath();
+    ctx.fillStyle = tint(fill);
+    ctx.fill();
+    if (outline) {
+      ctx.strokeStyle = ink;
+      ctx.lineWidth = 2.6;
+      ctx.lineJoin = 'miter';
+      ctx.stroke();
+    }
+  };
+  const rect = (x0, y0, w, h, color) => {
+    ctx.fillStyle = tint(color);
+    ctx.fillRect(x0, y0, w, h);
+  };
+  const leg = Math.round(Math.sin(phase) * 4);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale * (facing < 0 ? -1 : 1), scale);
+  ctx.imageSmoothingEnabled = false;
+
+  if (type === 'raptor') {
+    // The rear thigh and sickle foot move opposite the nearest leg.
+    poly([[-5, 7], [6, 8], [9, 16], [2 - leg, 25], [8 - leg, 27], [8 - leg, 30], [-3 - leg, 30], [-6 - leg, 25], [-1, 16]], '#246558');
+    // Tail, narrow torso, raised neck, and long horizontal snout.
+    poly([[-38, -12], [-26, -9], [-19, -13], [-8, -12], [-3, -17], [6, -16], [12, -23], [16, -30], [25, -31], [25, -28], [35, -28], [35, -23], [38, -23], [38, -15], [31, -14], [28, -9], [21, -7], [15, 2], [8, 10], [-4, 12], [-13, 7], [-20, 0], [-29, -4], [-38, -9]], '#4caa7b');
+    // The lit upper ridge follows the stepped silhouette.
+    poly([[-32, -10], [-22, -8], [-16, -11], [-7, -10], [-2, -15], [6, -14], [13, -21], [17, -28], [24, -28], [24, -25], [33, -25], [33, -22], [21, -22], [17, -14], [12, -8], [2, -4], [-10, -4], [-21, -6]], '#8dd49b', false);
+    poly([[-13, 0], [-3, 3], [8, 1], [16, -7], [23, -11], [28, -10], [22, -4], [17, 4], [7, 11], [-4, 10]], '#2b7964', false);
+    // Belly and flexed nearest thigh.
+    poly([[-4, 6], [7, 7], [12, 15], [6 + leg, 24], [10 + leg, 27], [18 + leg, 27], [18 + leg, 31], [4 + leg, 31], [1 + leg, 26], [5, 17], [-2, 14]], '#64b789');
+    poly([[4 + leg, 26], [4 + leg, 31], [0 + leg, 31], [-1 + leg, 25], [1 + leg, 22]], '#d1dfbb');
+    rect(10 + leg, 29, 8, 2, '#f0e1b5');
+    // Forward reaching arms, hooked claws.
+    poly([[11, -4], [16, -4], [19, 2], [26, 1], [27, 5], [20, 7], [15, 4]], '#3d926c');
+    rect(25, 3, 5, 2, '#f0e1b5');
+    rect(27, 4, 2, 4, '#f0e1b5');
+    // Dark striping, toothy jaw, and a bright alert eye.
+    rect(-13, -9, 4, 8, '#286e59');
+    rect(-5, -11, 4, 9, '#286e59');
+    rect(3, -12, 4, 6, '#286e59');
+    rect(22, -17, 15, 3, ink);
+    rect(28, -17, 2, 3, '#eee6c9');
+    rect(33, -17, 2, 2, '#eee6c9');
+    rect(22, -25, 8, 6, ink);
+    rect(23, -24, 5, 3, '#f9dc79');
+    rect(26, -24, 2, 3, '#1c211a');
+    rect(34, -24, 2, 2, '#1c4338');
+  } else if (type === 'trike') {
+    // Far pair of weight-bearing legs.
+    poly([[-25, 6], [-12, 7], [-14, 18], [-15 - leg, 30], [-28 - leg, 30], [-28 - leg, 24]], '#75483e');
+    poly([[7, 7], [20, 8], [20 + leg, 29], [6 + leg, 29], [7 + leg, 23]], '#75483e');
+    // Short tail and broad heavy back.
+    poly([[-48, 1], [-37, -5], [-31, -17], [-22, -21], [-8, -24], [10, -21], [21, -15], [24, 0], [18, 14], [6, 18], [-19, 14], [-29, 6], [-36, 3], [-45, 5]], '#ae774b');
+    poly([[-30, -14], [-20, -19], [-6, -21], [10, -18], [17, -13], [16, -7], [4, -11], [-11, -13], [-24, -8]], '#d7a567', false);
+    poly([[-29, 0], [-15, 4], [5, 3], [18, -1], [18, 13], [4, 17], [-17, 13]], '#956344', false);
+    rect(-22, -14, 5, 4, '#8a5a42');
+    rect(-12, -19, 6, 4, '#8a5a42');
+    rect(0, -17, 5, 4, '#8a5a42');
+    // Near legs with pale flat toenails.
+    poly([[-24, 5], [-9, 5], [-8, 15], [-13 + leg, 25], [-11 + leg, 31], [-27 + leg, 31], [-29 + leg, 27], [-24, 16]], '#bd8757');
+    poly([[8, 6], [23, 7], [25, 14], [20 - leg, 24], [24 - leg, 30], [7 - leg, 30], [5 - leg, 25], [10, 17]], '#bd8757');
+    rect(-26 + leg, 28, 4, 3, '#e4c795');
+    rect(-20 + leg, 28, 4, 3, '#e4c795');
+    rect(8 - leg, 27, 4, 3, '#e4c795');
+    rect(14 - leg, 27, 4, 3, '#e4c795');
+    // Large spiked frill with an inset shield.
+    poly([[14, -31], [19, -37], [24, -33], [30, -34], [31, -28], [37, -25], [34, -19], [39, -13], [35, -7], [36, 2], [30, 6], [28, 15], [21, 12], [16, 15], [12, 9], [7, 7], [9, 0], [5, -7], [10, -12], [7, -19], [13, -22]], '#815744');
+    poly([[17, -27], [24, -29], [29, -22], [29, -14], [33, -8], [29, -1], [29, 6], [22, 9], [16, 6], [13, -1], [14, -10], [12, -17]], '#d4965b');
+    poly([[18, -23], [23, -25], [24, -16], [29, -11], [26, -5], [27, 3], [22, 4], [21, -6], [16, -11]], '#edbd75', false);
+    // Face projects beyond the frill; three ivory horns distinguish the species.
+    poly([[23, -13], [33, -12], [38, -6], [44, -4], [47, 3], [44, 12], [33, 14], [25, 8], [22, 0]], '#b17e50');
+    poly([[31, -10], [37, -25], [38, -27], [37, -8]], '#eddfb7');
+    poly([[23, -13], [26, -29], [30, -32], [29, -10]], '#f9edc8');
+    poly([[42, -2], [47, -15], [46, 3]], '#f9edc8');
+    poly([[41, 5], [47, 3], [47, 9], [43, 14], [38, 12]], '#5d4538');
+    rect(29, -4, 7, 5, ink);
+    rect(30, -3, 4, 2, '#ffe087');
+    rect(33, -3, 2, 2, '#42291c');
+    rect(42, 2, 3, 2, '#543e31');
+    rect(35, 9, 8, 2, '#5d4538');
+  } else {
+    // Massive rear leg, counterweight tail, and heavy upright torso.
+    poly([[-16, 12], [6, 17], [14, 35], [4 - leg, 50], [8 - leg, 61], [23 - leg, 63], [23 - leg, 69], [-3 - leg, 69], [-10 - leg, 62], [-9 - leg, 46], [-22, 29]], '#713e39');
+    poly([[-74, -3], [-60, 1], [-48, -1], [-40, -9], [-28, -19], [-13, -24], [3, -28], [11, -43], [19, -56], [35, -55], [40, -30], [30, -10], [29, 8], [20, 24], [0, 31], [-18, 29], [-33, 17], [-42, 11], [-56, 9], [-67, 5], [-74, 1]], '#b6533e');
+    poly([[-63, 2], [-48, 3], [-39, -5], [-25, -15], [-10, -19], [6, -25], [15, -43], [23, -50], [31, -48], [23, -33], [18, -16], [6, -6], [-14, -4], [-27, -1], [-40, 6], [-52, 6]], '#dc7950', false);
+    poly([[-18, 10], [-2, 12], [10, 7], [16, -7], [25, -19], [32, -19], [28, -2], [28, 9], [19, 22], [0, 29], [-15, 26]], '#e1a36a', false);
+    // Stepped armored spine markings.
+    poly([[-37, -7], [-32, -17], [-27, -17], [-25, -4]], '#773f35', false);
+    poly([[-21, -17], [-17, -25], [-10, -26], [-9, -6]], '#773f35', false);
+    poly([[-3, -26], [4, -30], [8, -22], [4, -9]], '#773f35', false);
+    // Powerful nearest thigh, bent ankle and three clawed toes.
+    poly([[-16, 11], [0, 7], [15, 15], [19, 30], [7 + leg, 44], [5 + leg, 57], [15 + leg, 61], [29 + leg, 61], [33 + leg, 68], [29 + leg, 72], [0 + leg, 72], [-8 + leg, 65], [-11 + leg, 51], [-7 + leg, 38], [-22, 27]], '#c96a48');
+    poly([[-13, 16], [-1, 13], [9, 20], [11, 29], [2, 38], [-4, 37], [-4, 29], [-13, 24]], '#df8555', false);
+    rect(13 + leg, 64, 5, 6, '#f6dfae');
+    rect(21 + leg, 65, 5, 5, '#f6dfae');
+    rect(28 + leg, 67, 4, 3, '#f6dfae');
+    // Comically small two-fingered arm below the neck.
+    poly([[22, -7], [31, -6], [35, 3], [43, 2], [46, 7], [38, 11], [29, 9], [26, 3]], '#b9583f');
+    rect(42, 4, 7, 3, '#edce9c');
+    rect(44, 8, 5, 3, '#edce9c');
+    // Broad head, squared snout, protruding brow, and hinged lower jaw.
+    poly([[14, -53], [20, -64], [32, -69], [48, -69], [52, -64], [67, -64], [68, -58], [74, -55], [74, -36], [65, -31], [45, -32], [37, -28], [27, -32], [21, -40]], '#c56745');
+    poly([[20, -53], [25, -61], [34, -65], [47, -65], [51, -59], [66, -59], [69, -54], [51, -53], [42, -56], [31, -54], [26, -43]], '#ef9b5b', false);
+    poly([[30, -35], [41, -31], [68, -32], [68, -20], [61, -15], [43, -16], [33, -23]], '#a54c39');
+    poly([[40, -34], [73, -38], [71, -27], [65, -23], [44, -24], [36, -29]], '#291f21');
+    // Each blocky triangle is an individually visible ivory tooth.
+    poly([[42, -34], [48, -34], [47, -27]], '#f2dfb9', false);
+    poly([[52, -35], [58, -36], [57, -29]], '#f2dfb9', false);
+    poly([[62, -36], [68, -37], [67, -30]], '#f2dfb9', false);
+    poly([[47, -24], [51, -29], [54, -24]], '#cfb891', false);
+    poly([[58, -24], [62, -29], [65, -25]], '#cfb891', false);
+    rect(43, -19, 17, 3, '#d78350');
+    // Eye socket and slanted brow give the boss its expression.
+    poly([[31, -54], [43, -53], [46, -47], [41, -40], [31, -42], [28, -47]], '#713c32');
+    rect(32, -49, 10, 6, '#171e19');
+    rect(33, -48, 7, 4, '#ffdf63');
+    rect(37, -48, 2, 5, '#251a1a');
+    poly([[29, -55], [42, -55], [47, -50], [44, -47], [39, -50], [30, -50]], '#dd8450', false);
+    rect(64, -52, 5, 4, '#6c3930');
+    rect(58, -47, 4, 3, '#b2543c');
+    rect(25, -39, 5, 6, '#e58c53');
+  }
+  ctx.restore();
+}
+
+
+// Web Audio 合成短促枪声与爆炸声，只在用户操作后创建音频上下文。
+let audioCtx=null,noiseBuffer=null,master=null;
+function initAudio(){
+  if(!soundOn)return;
+  try{
+    if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audioCtx=new AC();master=audioCtx.createGain();master.gain.value=.26;master.connect(audioCtx.destination);noiseBuffer=audioCtx.createBuffer(1,Math.ceil(audioCtx.sampleRate*.35),audioCtx.sampleRate);const a=noiseBuffer.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1}
+    if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});
+  }catch(e){}
+}
+function tone(freq,duration,vol,type='square',end=60){if(!soundOn||!audioCtx||audioCtx.state!=='running')return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain(),t=audioCtx.currentTime;o.type=type;o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(end,20),t+duration);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g);g.connect(master);o.start(t);o.stop(t+duration)}catch(e){}}
+function noise(duration,vol,cutoff){if(!soundOn||!audioCtx||!noiseBuffer||audioCtx.state!=='running')return;try{const s=audioCtx.createBufferSource(),f=audioCtx.createBiquadFilter(),g=audioCtx.createGain(),t=audioCtx.currentTime;s.buffer=noiseBuffer;f.type='lowpass';f.frequency.value=cutoff;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+duration);s.connect(f);f.connect(g);g.connect(master);s.start(t);s.stop(t+duration)}catch(e){}}
+function shotSound(){noise(.06,.2,2600);tone(115,.055,.09,'triangle',40)}
+function toggleSound(){soundOn=!soundOn;$('soundBtn').classList.toggle('active',soundOn);$('soundBtn').setAttribute('aria-pressed',String(soundOn));$('soundBtn').setAttribute('aria-label',soundOn?'关闭音效':'开启音效');$('soundBtn').querySelector('span').textContent=soundOn?'音效 开':'音效 关';if(soundOn)initAudio();else if(audioCtx)audioCtx.suspend().catch(()=>{})}
+function resetInput(){input.mouse=false;input.space=false}
+function startGame(){
+  Object.assign(game,{state:'playing',time:0,score:0,kills:0,combo:0,bestCombo:0,comboTime:0,heat:0,lock:0,fireTimer:0,spawnTimer:.95,nextBoss:30,bosses:0,enemies:[],bullets:[],particles:[],texts:[],rings:[],decals:[],shake:0,flash:0,shotFlash:0,banner:0,lastHit:0});
+  resetInput();input.x=W*.5;input.y=H*.3;
+  $('startScreen').hidden=true;$('endScreen').hidden=true;$('pauseScreen').hidden=true;$('pauseBtn').disabled=false;$('pauseBtn').querySelector('span').textContent='暂停';$('pauseBtn').setAttribute('aria-label','暂停游戏');$('stage').classList.add('playing');$('broadcast').hidden=true;$('fieldStatus').textContent='● LIVE FIRE';
+  initAudio();tone(350,.12,.16,'square',700);updateUI();lastTime=performance.now();if(document.activeElement instanceof HTMLElement)document.activeElement.blur();
+}
+function pauseGame(){if(game.state!=='playing'&&game.state!=='paused')return;const pause=game.state==='playing';game.state=pause?'paused':'playing';resetInput();$('pauseScreen').hidden=!pause;$('stage').classList.toggle('playing',!pause);$('pauseBtn').querySelector('span').textContent=pause?'继续':'暂停';$('pauseBtn').setAttribute('aria-label',pause?'继续游戏':'暂停游戏');$('fieldStatus').textContent=pause?'Ⅱ PAUSED':'● LIVE FIRE';lastTime=performance.now();if(pause)$('resumeBtn').focus();else{initAudio();if(document.activeElement instanceof HTMLElement)document.activeElement.blur()}}
+function gameOver(){
+  if(game.state!=='playing')return;game.state='over';resetInput();game.shake=12;game.flash=.28;burst(player.x,player.y,65,['#f8ed9a','#edaa56','#f36840','#74715a'],250);noise(.3,.8,900);tone(130,.4,.3,'sawtooth',25);
+  $('stage').classList.remove('playing');$('endScreen').hidden=false;$('pauseBtn').disabled=true;$('fieldStatus').textContent='× OFFLINE';$('broadcast').hidden=true;$('heatNotice').hidden=true;$('finalScore').textContent=String(game.score).padStart(6,'0');$('finalKills').textContent=game.kills;$('finalCombo').textContent=game.bestCombo;$('finalTime').textContent=fmt(game.time);
+  const isRecord=game.score>record;if(isRecord){record=game.score;try{localStorage.setItem('dinobreak-best',String(record))}catch(e){}}
+  $('recordMessage').textContent=isRecord?'新纪录 / NEW PERSONAL BEST':'每一次坚守，都离纪录更近。';$('bestScore').textContent='LOCAL BEST / '+String(record).padStart(6,'0');$('restartBtn').focus();updateUI();
+}
+function spawnEnemy(type){
+  const spec=TYPES[type];let x,y;
+  if(type==='rex'){x=rnd(190,W-190);y=-100}else{const edge=Math.floor(Math.random()*3);if(edge===0){x=rnd(60,W-60);y=-70}else{x=edge===1?-65:W+65;y=rnd(105,325)}}
+  const angle=Math.atan2(player.y-y,player.x-x);
+  const e={type,x,y,hp:spec.hp,maxHp:spec.hp,r:spec.r,scale:spec.scale,speed:spec.speed*(type==='rex'?1:1+Math.min(game.time/220,.55)),points:spec.points,phase:rnd(0,6.28),age:0,hit:0,dx:Math.cos(angle),dy:Math.sin(angle),trail:0};game.enemies.push(e);
+  if(type==='rex'){game.bosses++;game.banner=2.7;$('broadcast').textContent='⚠ 巨兽入侵 / 霸王龙已进入禁区';$('broadcast').hidden=false;game.shake=6;tone(85,.5,.35,'sawtooth',38);noise(.3,.4,500)}
+  return e;
+}
+function burst(x,y,count,colors,speed){for(let i=0;i<count;i++){const a=rnd(0,Math.PI*2),v=rnd(speed*.18,speed);game.particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rnd(.2,.7),max:.7,size:rnd(2,7),color:colors[i%colors.length],drag:2.7})}if(game.particles.length>700)game.particles.splice(0,game.particles.length-700)}
+function hitEnemy(e,x,y){
+  e.hp--;e.hit=.11;game.lastHit=.09;burst(x,y,8,['#a72e31','#e2634c','#802f30','#f09062'],115);
+  if(e.hp<=0){
+    game.kills++;game.combo=game.comboTime>0?game.combo+1:1;game.comboTime=COMBO_WINDOW;game.bestCombo=Math.max(game.bestCombo,game.combo);const multiplier=1+Math.min(4,Math.floor(game.combo/5));const points=e.points*multiplier;game.score+=points;
+    burst(e.x,e.y,e.type==='rex'?68:32,e.type==='rex'?['#ffad62','#f66c4d','#e9e899','#b1c773']:['#daeb8a','#f4c86b','#cf7049','#8aa965'],e.type==='rex'?260:180);
+    game.rings.push({x:e.x,y:e.y,r:10,max:e.r*2,life:.4,color:e.type==='rex'?'#f98458':'#d8d987'});game.texts.push({x:e.x,y:e.y-e.r,text:'+'+points,life:1,color:e.type==='rex'?'#ffb475':'#e2f5a3'});
+    game.decals.push({x:e.x,y:e.y,r:e.r*.72,seed:Math.random(),life:13});if(game.decals.length>28)game.decals.shift();game.shake=e.type==='rex'?10:3;noise(e.type==='rex'?.3:.12,e.type==='rex'?.55:.2,e.type==='rex'?850:1600);
+    if(game.combo%5===0){game.texts.push({x:player.x,y:player.y-165,text:game.combo+' 连杀 · ×'+multiplier,life:1.4,color:'#e7f79a'});tone(400+game.combo*10,.13,.15,'square',850)}
+  }
+}
+function shoot(){
+  const aim=Math.atan2(Math.min(input.y,player.y-12)-player.y,input.x-player.x),spread=.021+game.heat/100*.049,angle=aim+rnd(-spread,spread),mx=player.x+Math.cos(aim)*69,my=player.y+Math.sin(aim)*69;
+  game.bullets.push({x:mx,y:my,px:mx,py:my,vx:Math.cos(angle)*1450,vy:Math.sin(angle)*1450,life:1.2});
+  game.shotFlash=.05;game.shake=Math.max(game.shake,.8);game.heat=clamp(game.heat+HEAT_PER_SHOT,0,100);shotSound();
+  game.particles.push({x:player.x+16,y:player.y-15,vx:rnd(70,150),vy:rnd(-140,-75),life:.6,max:.6,size:4,color:'#dbb26a',drag:.8,shell:true});
+  if(game.heat>=100){game.lock=LOCK_TIME;tone(500,.24,.2,'sawtooth',180);noise(.28,.22,4400)}
+}
+// 线段与圆形碰撞：高速子弹仍能命中相邻帧之间经过的恐龙。
+function segmentHit(ax,ay,bx,by,cx,cy,r){const dx=bx-ax,dy=by-ay,fx=ax-cx,fy=ay-cy,a=dx*dx+dy*dy;if(fx*fx+fy*fy<=r*r)return 0;if(a===0)return null;const b=2*(fx*dx+fy*dy),c=fx*fx+fy*fy-r*r,disc=b*b-4*a*c;if(disc<0)return null;const t=(-b-Math.sqrt(disc))/(2*a);return t>=0&&t<=1?t:null}
+// 身体与头部都有命中区，让瞄准头部的子弹也能稳定命中。
+function enemyHitboxes(e){const facing=player.x-e.x>=0?1:-1;const h=e.type==='rex'?[47,-44,31]:e.type==='trike'?[33,-4,18]:[27,-20,13];return [{x:e.x,y:e.y,r:e.r},{x:e.x+h[0]*e.scale*facing,y:e.y+h[1]*e.scale,r:h[2]*e.scale}]}
+function update(dt){
+  game.time+=dt;game.banner=Math.max(0,game.banner-dt);game.shotFlash=Math.max(0,game.shotFlash-dt);game.lastHit=Math.max(0,game.lastHit-dt);
+  if(game.comboTime>0){game.comboTime=Math.max(0,game.comboTime-dt);if(game.comboTime===0)game.combo=0}
+  if(game.lock>0){game.lock=Math.max(0,game.lock-dt);if(game.lock<1e-6)game.lock=0;game.heat=100*game.lock/LOCK_TIME;game.fireTimer=0;if(game.lock===0){game.heat=0;tone(620,.1,.1,'triangle',920)}}
+  if(game.lock===0){
+    if(input.mouse||input.space){game.fireTimer-=dt;while(game.fireTimer<=0&&game.lock===0){shoot();game.fireTimer+=FIRE_INTERVAL}}
+    else{game.heat=Math.max(0,game.heat-COOL_RATE*dt);game.fireTimer=0}
+  }
+  // 使用游戏时间，暂停与切换到后台不计入 Boss 的 30 秒周期。
+  while(game.time>=game.nextBoss){spawnEnemy('rex');game.nextBoss+=30}
+  game.spawnTimer-=dt;if(game.spawnTimer<=0){spawnEnemy(Math.random()<(game.time<7?.13:.31)?'trike':'raptor');game.spawnTimer+=Math.max(.56,1.55-game.time*.005)}
+  for(const e of game.enemies){if(e.hp<=0)continue;e.age+=dt;e.hit=Math.max(0,e.hit-dt);const dx=player.x-e.x,dy=player.y-e.y,dist=Math.hypot(dx,dy);let vx,vy;
+    if(e.type==='trike'){vx=e.dx*e.speed;vy=e.dy*e.speed}
+    else{const ux=dx/(dist||1),uy=dy/(dist||1),zig=e.type==='raptor'?Math.sign(Math.sin(e.age*5.3+e.phase))*e.speed*.78*Math.min(1,dist/140):0;vx=ux*e.speed-uy*zig;vy=uy*e.speed+ux*zig}
+    e.x+=vx*dt;e.y+=vy*dt;e.trail+=dt;
+    if(e.trail>.19&&e.y>10){e.trail=0;if(e.type!=='raptor')game.particles.push({x:e.x+rnd(-18,18),y:e.y+e.r*.65,vx:rnd(-12,12),vy:rnd(3,15),life:.45,max:.45,size:rnd(3,9),color:'#727350',drag:2})}
+  }
+  for(const b of game.bullets){b.px=b.x;b.py=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;let target=null,closest=Infinity;for(const e of game.enemies){if(e.hp<=0)continue;for(const box of enemyHitboxes(e)){const t=segmentHit(b.px,b.py,b.x,b.y,box.x,box.y,box.r+3);if(t!==null&&t<closest){closest=t;target=e}}}if(target){hitEnemy(target,b.px+(b.x-b.px)*closest,b.py+(b.y-b.py)*closest);b.life=0}}
+  game.bullets=game.bullets.filter(b=>b.life>0&&b.x>-40&&b.x<W+40&&b.y>-60&&b.y<H+60);game.enemies=game.enemies.filter(e=>e.hp>0);
+  for(const e of game.enemies){if(enemyHitboxes(e).some(box=>Math.hypot(box.x-player.x,box.y-player.y)<=box.r+player.r)){gameOver();break}}
+  updateEffects(dt);
+}
+function updateEffects(dt){game.shake=Math.max(0,game.shake-dt*21);game.flash=Math.max(0,game.flash-dt);for(const p of game.particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const decay=Math.exp(-p.drag*dt);p.vx*=decay;p.vy=p.vy*decay+(p.shell?350*dt:0)}game.particles=game.particles.filter(p=>p.life>0);for(const t of game.texts){t.life-=dt;t.y-=30*dt}game.texts=game.texts.filter(t=>t.life>0);for(const r of game.rings){r.life-=dt;r.r+=(r.max-r.r)*dt*12}game.rings=game.rings.filter(r=>r.life>0);for(const d of game.decals)d.life-=dt;game.decals=game.decals.filter(d=>d.life>0)}
+function updateUI(){
+  $('score').textContent=String(game.score).padStart(6,'0');$('kills').innerHTML=String(game.kills).padStart(2,'0')+'<span class="unit">ELIMINATED</span>';$('combo').innerHTML=game.combo+'<span class="unit">×'+(1+Math.min(4,Math.floor(game.combo/5)))+' 分数</span>';$('comboFill').style.width=(game.comboTime/COMBO_WINDOW*100)+'%';$('elapsed').textContent=fmt(game.time);
+  const boss=game.enemies.find(e=>e.type==='rex'),left=Math.max(0,game.nextBoss-game.time);$('bossStat').classList.toggle('active',!!boss);$('bossLabel').innerHTML=boss?'BOSS ACTIVE <b>巨兽在场</b>':'BOSS IN <b>巨兽倒计时</b>';$('bossTimer').textContent=boss?boss.hp+' / '+boss.maxHp+' HP':fmt(Math.ceil(left));$('bossProgress').style.width=(1-left/30)*100+'%';$('bossHp').hidden=!boss||game.banner>0||game.state==='menu';if(boss){$('bossHpText').textContent=boss.hp+' / '+boss.maxHp;$('bossHpFill').style.width=boss.hp/boss.maxHp*100+'%'}
+  const heat=Math.round(game.heat),locked=game.lock>0;$('heatFill').style.width=heat+'%';$('heatText').textContent=locked?game.lock.toFixed(1)+'s / 冷却':heat+'%';$('heatTrack').setAttribute('aria-valuenow',String(heat));$('thermal').classList.toggle('locked',locked);$('heatLabel').textContent=locked?'OVERHEATED / 强制冷却':'BARREL HEAT / 枪管温度';$('heatNotice').hidden=!locked||game.state!=='playing';$('heatNotice').textContent='枪管过热 · 冷却 '+game.lock.toFixed(1)+'s';if(game.banner<=0)$('broadcast').hidden=true;
+  const near=game.enemies.some(e=>Math.hypot(e.x-player.x,e.y-player.y)<190);$('edgeWarning').hidden=!near||game.state!=='playing';
+}
+function resize(){const rect=canvas.getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);view.scale=Math.min(rect.width/W,rect.height/H);view.x=(rect.width-W*view.scale)/2;view.y=(rect.height-H*view.scale)/2;ctx.imageSmoothingEnabled=false}
+// 战场：远处工业废墟、透视网格、混凝土掩体。静态纹理只生成一次。
+const scenery=document.createElement('canvas');scenery.width=W;scenery.height=H;
+function buildScenery(){const c=scenery.getContext('2d');let seed=71;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646};const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#101a16');g.addColorStop(.3,'#1c2b20');g.addColorStop(1,'#1a261a');c.fillStyle=g;c.fillRect(0,0,W,H);
+  c.fillStyle='#263523';c.beginPath();c.arc(975,80,58,0,Math.PI*2);c.fill();c.fillStyle='#17241b';c.fillRect(895,64,170,11);c.fillRect(914,96,140,5);
+  for(let i=0;i<31;i++){const x=i*45-10,h=25+rand()*90;c.fillStyle=i%3?'#121f19':'#15241b';c.fillRect(x,135-h,35+rand()*30,h);c.fillRect(x+7,126-h,8,9);if(i%4===0){c.fillStyle='#546242';c.fillRect(x+13,150-h,4,3)}}
+  c.fillStyle='#1e2d21';c.fillRect(0,133,W,4);c.fillStyle='#0e1813';c.fillRect(0,138,W,8);
+  c.strokeStyle='#74895a18';c.lineWidth=1;for(let x=-1000;x<=2200;x+=110){c.beginPath();c.moveTo(W/2+(x-W/2)*.12,142);c.lineTo(x,H);c.stroke()}for(let y=151,step=11;y<H;y+=step,step*=1.23){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+  for(let i=0;i<380;i++){const x=rand()*W,y=150+rand()*(H-150);c.fillStyle=['#87916810','#acb77a12','#101a1250'][i%3];c.fillRect(x,y,1+rand()*5,1+rand()*2)}
+  function barricade(x,y,width){c.fillStyle='#111a13';c.fillRect(x-6,y+7,width+12,36);c.fillStyle='#36412b';c.fillRect(x,y,width,29);c.fillStyle='#606745';c.fillRect(x,y,width,4);c.fillStyle='#263020';c.fillRect(x+4,y+14,width-8,13);for(let p=8;p<width-8;p+=28){c.fillStyle='#9d9e593d';c.beginPath();c.moveTo(x+p,y+5);c.lineTo(x+p+11,y+5);c.lineTo(x+p-2,y+14);c.lineTo(x+p-13,y+14);c.fill()}c.fillStyle='#768058';c.fillRect(x+4,y+6,3,3);c.fillRect(x+width-7,y+6,3,3)}
+  barricade(42,540,155);barricade(1082,540,155);barricade(213,612,192);barricade(875,612,192);
+  c.strokeStyle='#b2bd5f66';c.lineWidth=2;c.setLineDash([17,13]);c.beginPath();c.moveTo(0,595);c.lineTo(445,595);c.moveTo(835,595);c.lineTo(W,595);c.stroke();c.setLineDash([]);
+  c.font='9px monospace';c.fillStyle='#7f8a5766';c.fillText('RESTRICTED ZONE // DO NOT CROSS',70,583);c.fillText('RESTRICTED ZONE // DO NOT CROSS',960,583);
+  for(const x of [444,816]){c.fillStyle='#263322';c.fillRect(x,585,20,66);c.fillStyle='#738151';c.fillRect(x+2,585,16,4);c.fillStyle='#d3dd7844';c.fillRect(x+6,591,8,3)}
+  const v=c.createRadialGradient(W/2,H/2,100,W/2,H/2,780);v.addColorStop(0,'#00000000');v.addColorStop(1,'#030b079e');c.fillStyle=v;c.fillRect(0,0,W,H);
+}
+function drawTurret(){ctx.save();ctx.translate(player.x,player.y);ctx.fillStyle='#060d0980';ctx.beginPath();ctx.ellipse(0,30,66,20,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#9cae5935';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,8,85,42,0,0,Math.PI*2);ctx.stroke();poly([[-42,4],[-30,-21],[30,-21],[43,4],[36,37],[-35,37]],'#101b12');poly([[-36,3],[-24,-16],[24,-16],[36,3],[30,30],[-28,30]],'#424f31');ctx.fillStyle='#74815a';ctx.fillRect(-24,-13,47,5);ctx.fillStyle='#202c1b';ctx.fillRect(-37,11,12,20);ctx.fillRect(27,11,12,20);ctx.fillStyle='#9dab6a';ctx.fillRect(-29,2,4,4);ctx.fillRect(25,2,4,4);ctx.fillStyle='#2b3824';ctx.fillRect(-15,7,30,25);ctx.fillStyle='#a6b97b';ctx.fillRect(-9,13,18,3);ctx.fillStyle='#d4ef66';ctx.fillRect(-5,24,10,3);
+  const a=game.state==='menu'?-Math.PI*.68:Math.atan2(Math.min(input.y,player.y-12)-player.y,input.x-player.x);ctx.rotate(a+Math.PI/2);const recoil=game.shotFlash>0?4:0;ctx.translate(0,recoil);ctx.fillStyle='#101910';ctx.fillRect(-15,-37,30,49);ctx.fillStyle='#59683e';ctx.fillRect(-12,-34,24,43);ctx.fillStyle='#83965b';ctx.fillRect(-12,-34,5,39);ctx.fillStyle='#313f25';ctx.fillRect(7,-34,5,42);ctx.fillStyle='#080f0b';ctx.fillRect(-11,-72,22,47);ctx.fillStyle='#849166';ctx.fillRect(-7,-68,4,36);ctx.fillStyle='#515d41';ctx.fillRect(2,-68,5,36);ctx.fillStyle=game.lock>0?'#e97848':game.heat>70?'#a88b47':'#667749';ctx.fillRect(-11,-61,22,5);ctx.fillRect(-11,-47,22,5);ctx.fillStyle='#222d1c';ctx.fillRect(-13,-74,26,9);ctx.fillStyle='#809158';ctx.fillRect(-12,-74,24,3);
+  if(game.shotFlash>0){ctx.shadowColor='#f5e780';ctx.shadowBlur=23;poly([[-8,-76],[-17,-84],[-7,-87],[-3,-112],[4,-94],[11,-103],[9,-83],[17,-85],[8,-76]],'#f8d870');poly([[-4,-75],[-5,-88],[0,-101],[5,-85],[4,-75]],'#ffffd3');ctx.shadowBlur=0}ctx.restore();
+}
+function drawEnemy(e){const facing=player.x-e.x>=0?1:-1;drawDinosaur(ctx,e.type,e.x,e.y,e.scale,facing,e.age*(e.type==='raptor'?13:6)+e.phase,e.hit/.11);if(e.hp<e.maxHp){const width=e.type==='rex'?87:42,yy=e.y-e.r-20;ctx.fillStyle='#0b100ddd';ctx.fillRect(e.x-width/2-2,yy-2,width+4,7);ctx.fillStyle=e.type==='rex'?'#ef875e':'#d4df83';ctx.fillRect(e.x-width/2,yy,width*e.hp/e.maxHp,3)}}
+function drawMenu(){drawDinosaur(ctx,'rex',918,340,2.25,-1,visualTime*2,0);drawDinosaur(ctx,'trike',1140,467,.95,-1,visualTime*2+1,0);drawDinosaur(ctx,'raptor',770,495,1.07,-1,visualTime*3,0);ctx.strokeStyle='#aabb6450';ctx.lineWidth=1;ctx.setLineDash([3,7]);ctx.beginPath();ctx.arc(930,336,170,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#9aa56d';ctx.font='9px monospace';ctx.fillText('T-REX // SPECIMEN 003',1016,161);ctx.fillStyle='#d59a61';ctx.fillRect(1004,154,4,4)}
+function render(){
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#101913';ctx.fillRect(0,0,canvas.width/dpr,canvas.height/dpr);ctx.translate(view.x,view.y);ctx.scale(view.scale,view.scale);ctx.save();ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();if(game.shake>0&&!reducedMotion)ctx.translate(rnd(-game.shake,game.shake),rnd(-game.shake*.7,game.shake*.7));ctx.drawImage(scenery,0,0);
+  // 轻微漂浮尘埃，不影响碰撞。
+  for(let i=0;i<22;i++){const x=(i*193+visualTime*(3+i%4))%(W+40)-20,y=180+(i*67)%440+Math.sin(visualTime*.3+i)*9;ctx.fillStyle='#b0b78025';ctx.fillRect(x,y,i%3===0?3:2,2)}
+  if(game.state==='menu')drawMenu();
+  for(const d of game.decals){ctx.globalAlpha=Math.min(.5,d.life/4);ctx.fillStyle='#752f2b';ctx.fillRect(d.x-d.r,d.y-4,d.r*2,11);ctx.fillRect(d.x-d.r*.6,d.y-11,d.r*1.3,27);ctx.fillRect(d.x+d.r*.8,d.y+8,7,6)}ctx.globalAlpha=1;
+  for(const e of [...game.enemies].sort((a,b)=>a.y-b.y))drawEnemy(e);
+  ctx.lineCap='square';for(const b of game.bullets){const a=Math.atan2(b.vy,b.vx);ctx.strokeStyle='#f4bb4670';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(b.x-Math.cos(a)*28,b.y-Math.sin(a)*28);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.strokeStyle='#ffffb9';ctx.lineWidth=2.6;ctx.beginPath();ctx.moveTo(b.x-Math.cos(a)*23,b.y-Math.sin(a)*23);ctx.lineTo(b.x,b.y);ctx.stroke()}
+  drawTurret();
+  for(const p of game.particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;ctx.fillRect(Math.round(p.x),Math.round(p.y),p.size,p.shell?p.size*.45:p.size)}ctx.globalAlpha=1;
+  for(const r of game.rings){ctx.globalAlpha=r.life/.4;ctx.strokeStyle=r.color;ctx.lineWidth=2;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke()}ctx.globalAlpha=1;
+  for(const t of game.texts){ctx.globalAlpha=Math.min(1,t.life*2);ctx.font='bold 18px monospace';ctx.textAlign='center';ctx.fillStyle='#111b10';ctx.fillText(t.text,t.x+2,t.y+2);ctx.fillStyle=t.color;ctx.fillText(t.text,t.x,t.y)}ctx.globalAlpha=1;ctx.textAlign='left';
+  if(game.lock>0){ctx.globalAlpha=.4;ctx.fillStyle='#b7b797';for(let i=0;i<5;i++){const q=(visualTime*1.7+i*.23)%1;ctx.fillRect(player.x+Math.sin(i+q*2)*13,player.y-80-q*47,4+q*6,4+q*6)}ctx.globalAlpha=1}
+  if(game.state==='playing'){const x=input.x,y=Math.min(input.y,player.y-12),s=12+game.heat*.035;ctx.strokeStyle=game.lock>0?'#fd895f':'#e5f69d';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(x-s-7,y);ctx.lineTo(x-s,y);ctx.moveTo(x+s,y);ctx.lineTo(x+s+7,y);ctx.moveTo(x,y-s-7);ctx.lineTo(x,y-s);ctx.moveTo(x,y+s);ctx.lineTo(x,y+s+7);ctx.stroke();ctx.strokeRect(x-s*.5,y-s*.5,s,s);ctx.fillStyle=ctx.strokeStyle;ctx.fillRect(x-1,y-1,2,2);if(game.lastHit>0){ctx.strokeStyle='#fff3b4';ctx.lineWidth=2;for(let i=0;i<4;i++){const a=Math.PI/4+i*Math.PI/2;ctx.beginPath();ctx.moveTo(x+Math.cos(a)*21,y+Math.sin(a)*21);ctx.lineTo(x+Math.cos(a)*28,y+Math.sin(a)*28);ctx.stroke()}}}
+  if(game.flash>0){ctx.fillStyle='#e6ac7433';ctx.fillRect(0,0,W,H)}ctx.restore();
+}
+// 使用小时间步，避免低帧率穿透；后台失焦则暂停，避免玩家切走时阵亡。
+function frame(now){const elapsed=lastTime?Math.min((now-lastTime)/1000,.12):0;lastTime=now;if(game.state!=='paused')visualTime+=elapsed;if(game.state==='playing'){let remaining=elapsed;while(remaining>0&&game.state==='playing'){const dt=Math.min(remaining,1/120);update(dt);remaining-=dt}}else if(game.state==='over')updateEffects(elapsed);uiTimer+=elapsed;if(uiTimer>.045){updateUI();uiTimer=0}render();requestAnimationFrame(frame)}
+function pointerPosition(e){const r=canvas.getBoundingClientRect();input.x=clamp((e.clientX-r.left-view.x)/view.scale,0,W);input.y=clamp((e.clientY-r.top-view.y)/view.scale,0,H)}
+canvas.addEventListener('pointermove',e=>{pointerPosition(e);input.inside=true});
+canvas.addEventListener('pointerdown',e=>{if(e.button!==0||game.state!=='playing')return;e.preventDefault();pointerPosition(e);input.mouse=true;initAudio();try{canvas.setPointerCapture(e.pointerId)}catch(err){}});
+window.addEventListener('pointerup',e=>{if(e.button===0)input.mouse=false});canvas.addEventListener('pointercancel',()=>input.mouse=false);canvas.addEventListener('lostpointercapture',()=>input.mouse=false);canvas.addEventListener('pointerleave',()=>{input.inside=false});canvas.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('keydown',e=>{if(e.code==='Space'){if(game.state==='playing'){e.preventDefault();input.space=true;initAudio()}return}if(e.repeat)return;if(e.code==='Enter'&&(game.state==='menu'||game.state==='over')){e.preventDefault();startGame()}else if(e.code==='KeyP'||e.code==='Escape'){e.preventDefault();pauseGame()}else if(e.code==='KeyM')toggleSound();else if(e.code==='KeyF')toggleFullscreen()});
+window.addEventListener('keyup',e=>{if(e.code==='Space'){input.space=false;if(game.state==='playing')e.preventDefault()}});window.addEventListener('blur',()=>{resetInput();if(game.state==='playing')pauseGame()});document.addEventListener('visibilitychange',()=>{if(document.hidden&&game.state==='playing')pauseGame()});
+async function toggleFullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else if($('shell').requestFullscreen)await $('shell').requestFullscreen();else{$('fullBtn').title='此浏览器请使用系统全屏快捷键';$('fullBtn').querySelector('span').textContent='系统全屏'}}catch(e){$('fullBtn').title='可使用浏览器菜单进入全屏'}}
+$('startBtn').addEventListener('click',startGame);$('restartBtn').addEventListener('click',startGame);$('resumeBtn').addEventListener('click',pauseGame);$('pauseBtn').addEventListener('click',pauseGame);$('soundBtn').addEventListener('click',toggleSound);$('fullBtn').addEventListener('click',toggleFullscreen);
+document.addEventListener('fullscreenchange',()=>{$('fullBtn').classList.toggle('active',!!document.fullscreenElement);resize()});new ResizeObserver(resize).observe($('stage'));
+buildScenery();resize();updateUI();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
